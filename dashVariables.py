@@ -96,6 +96,7 @@ def tabla_Hist(varCol, nomCol):
     df_tf['x'] = (df_tf['limSup'] + df_tf['limInf']) / 2
     df_tf['f'] = np.full(shape = intervalos, fill_value = np.nan)
 
+    varCol = varCol.reset_index(drop=True)
     for i in range (intervalos):
         k = 0
         if i == 0:
@@ -103,11 +104,11 @@ def tabla_Hist(varCol, nomCol):
                 if varCol[j] <= df_tf['limSup'][i]:
                     k = k + 1
                 df_tf.loc[i, 'f'] = k
-            else:
-                for j in range(n):
-                    if(varCol[j] > df_tf['limInf'][i]) and (varCol[j] <= df_tf['limSup'][i]):
-                        k = k + 1
-                    df_tf.loc[i, 'f'] = k
+        else:
+            for j in range(n):
+                if(varCol[j] > df_tf['limInf'][i]) and (varCol[j] <= df_tf['limSup'][i]):
+                    k = k + 1
+            df_tf.loc[i, 'f'] = k
     
     df_tf['Fa'] = df_tf['f'].cumsum()
     df_tf['fr'] = round(df_tf['f'] / n, 4)
@@ -707,7 +708,7 @@ elif op == 'Estadistica':
         coll1, col2, col3, col4, col5, col6 = st.columns(6, border = False)
         with coll1:
             opcion_col = st.selectbox('Selecciona la variable (Medidas Dispersion): ',
-                                    ['Temperatura (°C)', 'Watermark Combinación', 'Watermark Uni', 'Riego'])
+                                    ['Temperatura (°C)', 'Watermark Comercial', 'Watermark Uni', 'Riego'])
         
         with col2:
             rango_v = df[opcion_col].max() - df[opcion_col].min()
