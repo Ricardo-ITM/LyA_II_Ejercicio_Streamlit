@@ -612,9 +612,9 @@ elif op == 'Estadistica':
         with st.expander('Data Set: Plantación de Dátiles', expanded = False):
             st.markdown('''
             El Data Set contiene **2,232 registros** de monitoreo horario de una plantación de dátiles.
-            Compara dos sensores de humedad de suelo tipo Watermark:
+            Compara dos sensores de humedad de suelo **Watermark**:
             * **Fecha**. Fecha del registro.
-            * **Hora**. Hora del registro (00:00 a 23:00).
+            * **Hora**. Hora del registro.
             * **Día**. Día de la semana del registro.
             * **Mes**. Mes correspondiente al registro.
             * **Temperatura (°C)**. Temperatura ambiente registrada.
@@ -702,7 +702,7 @@ elif op == 'Estadistica':
             
         with col4:
             moda_v = df[opcion_col].mode()
-            st.metric('Moda', '%0.2f' %moda_v)
+            st.metric('Moda', '%0.2f' %moda_v[0])
     
     elif opcion_explora == 'Medidas de Dispersion':
         coll1, col2, col3, col4, col5, col6 = st.columns(6, border = False)
