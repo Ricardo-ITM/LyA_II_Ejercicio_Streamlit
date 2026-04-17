@@ -595,6 +595,174 @@ if op == 'Visualizacion':
                             'Watermark Comercial + Watermark Uni, '
                             'Temperatura + Watermark Comercial, '
                             'Temperatura + Watermark Uni.')
+    elif opcion == 'Dos variables':
+        opcionBi = st.sidebar.multiselect('Selecciona dos variables',
+                                          ['Watermark Comercial', 'Watermark Uni',
+                                           'Temperatura'])
+
+        lista1 = ['Watermark Comercial', 'Watermark Uni']
+        lista2 = ['Temperatura', 'Watermark Comercial']
+        lista3 = ['Temperatura', 'Watermark Uni']
+
+        if len(opcionBi) < 2:
+            st.info('Selecciona exactamente dos variables en el panel izquierdo para visualizar.')
+        elif set(opcionBi) == set(lista1):
+            varX = df['Watermark Comercial']
+            varY = df['Watermark Uni']
+
+            coll, col2 = st.columns(2)
+
+            with coll:
+                col = 'Riego'
+                cocs = 'RdYlGn'
+                x_title = 'Watermark Comercial'
+                y_title = 'Watermark Uni'
+                tamano = None
+                titulo = 'Comparación: Watermark Comercial vs Universitario'
+
+                grafica_sc = px.scatter(df, x=varX, y=varY,
+                                        color=col,
+                                        color_continuous_scale=cocs,
+                                        title=titulo)
+                actualiza_layout(grafica_sc, x_title, y_title)
+                st.plotly_chart(grafica_sc, width='stretch')
+
+            with col2:
+                col = 'Mes'
+                x_title = 'Watermark Comercial'
+                y_title = 'Watermark Uni'
+                titulo = 'Comparación de sensores por Mes'
+
+                grafica_sc2 = px.scatter(df, x=varX, y=varY,
+                                         color=col,
+                                         marginal_x='histogram',
+                                         marginal_y='box',
+                                         title=titulo)
+                actualiza_layout(grafica_sc2, x_title, y_title)
+                st.plotly_chart(grafica_sc2, width='stretch')
+
+            col3, col4 = st.columns(2)
+
+            with col3:
+                cds_box = ['steelblue', 'darkorange']
+                df_melt = df[['Watermark Comercial', 'Watermark Uni']].melt(
+                    var_name='Sensor', value_name='Lectura')
+                box_comp = px.box(df_melt, x='Sensor', y='Lectura',
+                                   color='Sensor',
+                                   color_discrete_sequence=cds_box,
+                                   points='outliers',
+                                   title='Distribución comparativa de sensores')
+                actualiza_layout(box_comp, 'Sensor', 'Lectura')
+                st.plotly_chart(box_comp, width='stretch')
+
+            with col4:
+                col = 'Día'
+                x_title = 'Watermark Comercial'
+                y_title = 'Watermark Uni'
+                titulo = 'Comparación de sensores por Día'
+
+                grafica_sc3 = px.scatter(df, x=varX, y=varY,
+                                          color=col,
+                                          facet_col='Mes',
+                                          title=titulo)
+                actualiza_layout(grafica_sc3, x_title, y_title)
+                st.plotly_chart(grafica_sc3, width='stretch')
+
+        elif set(opcionBi) == set(lista2):
+            varX = df['Temperatura (°C)']
+            varY = df['Watermark Comercial']
+
+            coll, col2 = st.columns(2)
+
+            with coll:
+                col = 'Riego'
+                cocs = 'RdYlGn'
+                titulo = 'Temperatura vs Watermark Comercial'
+                grafica_sc = px.scatter(df, x=varX, y=varY,
+                                        color=col,
+                                        color_continuous_scale=cocs,
+                                        title=titulo)
+                actualiza_layout(grafica_sc, 'Temperatura (°C)', 'Watermark Comercial')
+                st.plotly_chart(grafica_sc, width='stretch')
+
+            with col2:
+                varY2 = df['Watermark Uni']
+                titulo2 = 'Temperatura vs Watermark Universitario'
+                grafica_sc2 = px.scatter(df, x=varX, y=varY2,
+                                          color='Riego',
+                                          color_continuous_scale='RdYlGn',
+                                          title=titulo2)
+                actualiza_layout(grafica_sc2, 'Temperatura (°C)', 'Watermark Uni')
+                st.plotly_chart(grafica_sc2, width='stretch')
+
+            col3, col4 = st.columns(2)
+
+            with col3:
+                xvar = 'Riego'
+                yvar = 'Watermark Comercial'
+                cds = ['steelblue', 'darkorange']
+                titulo = 'Watermark Comercial por evento de Riego'
+                box_riego = boxplt1(yvar, cds, titulo,
+                                     'Riego', 'Watermark Comercial',
+                                     'Mes', xvar, 'outliers')
+                st.plotly_chart(box_riego, width='stretch')
+
+            with col4:
+                xvar = 'Riego'
+                yvar = 'Temperatura (°C)'
+                cds = ['tomato', 'seagreen']
+                titulo = 'Temperatura por evento de Riego'
+                box_temp_riego = boxplt1(yvar, cds, titulo,
+                                          'Riego', 'Temperatura (°C)',
+                                          'Mes', xvar, 'outliers')
+                st.plotly_chart(box_temp_riego, width='stretch')
+
+        elif set(opcionBi) == set(lista3):
+            varX = df['Temperatura (°C)']
+            varY = df['Watermark Uni']
+
+            coll, col2 = st.columns(2)
+
+            with coll:
+                titulo = 'Temperatura vs Watermark Universitario'
+                grafica_sc = px.scatter(df, x=varX, y=varY,
+                                        color='Riego',
+                                        color_continuous_scale='RdYlGn',
+                                        title=titulo)
+                actualiza_layout(grafica_sc, 'Temperatura (°C)', 'Watermark Uni')
+                st.plotly_chart(grafica_sc, width='stretch')
+
+            with col2:
+                titulo2 = 'Temperatura vs Watermark Uni con marginales'
+                grafica_sc2 = px.scatter(df, x=varX, y=varY,
+                                          color='Mes',
+                                          marginal_x='histogram',
+                                          marginal_y='box',
+                                          title=titulo2)
+                actualiza_layout(grafica_sc2, 'Temperatura (°C)', 'Watermark Uni')
+                st.plotly_chart(grafica_sc2, width='stretch')
+
+            col3, col4 = st.columns(2)
+
+            with col3:
+                box_uni_riego = boxplt1('Watermark Uni', ['darkorange', 'steelblue'],
+                                         'Watermark Uni por evento de Riego',
+                                         'Riego', 'Watermark Uni',
+                                         'Mes', 'Riego', 'outliers')
+                st.plotly_chart(box_uni_riego, width='stretch')
+
+            with col4:
+                box_temp_uni = boxplt1('Temperatura (°C)', ['tomato', 'mediumpurple'],
+                                        'Temperatura por evento de Riego',
+                                        'Riego', 'Temperatura (°C)',
+                                        'Mes', 'Riego', 'outliers')
+                st.plotly_chart(box_temp_uni, width='stretch')
+
+        else:
+            st.warning('Combinación no disponible. Las opciones válidas son: '
+                       'Watermark Comercial + Watermark Uni, '
+                       'Temperatura + Watermark Comercial, '
+                       'Temperatura + Watermark Uni.')
 
 elif op == 'Estadistica':
 
